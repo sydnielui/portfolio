@@ -93,3 +93,28 @@ updateScrollProgress();
 window.addEventListener("scroll", updateActiveLink, { passive: true });
 window.addEventListener("scroll", updateScrollProgress, { passive: true });
 window.addEventListener("pointermove", updateCursor, { passive: true });
+
+const introVideo = document.getElementById("portfolio-intro-video");
+
+if (introVideo) {
+  const introObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          introVideo.currentTime = 0;
+
+          introVideo.play().catch(() => {
+            // Autoplay may be blocked by the browser.
+          });
+        } else {
+          introVideo.pause();
+        }
+      });
+    },
+    {
+      threshold: 0.6
+    }
+  );
+
+  introObserver.observe(introVideo);
+}
