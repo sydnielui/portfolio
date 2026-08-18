@@ -97,22 +97,35 @@ window.addEventListener("pointermove", updateCursor, { passive: true });
 const introVideo = document.getElementById("portfolio-intro-video");
 
 if (introVideo) {
+  // Try to start the video immediately
+  const startVideo = () => {
+    introVideo.muted = true;
+    introVideo.play().catch((error) => {
+      console.log("Video autoplay was blocked:", error);
+    });
+  };
+
+  // Start when the page loads
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startVideo);
+  } else {
+    startVideo();
+  }
+
+  // Replay whenever the video comes back into view
   const introObserver = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           introVideo.currentTime = 0;
-
-          introVideo.play().catch(() => {
-            // Autoplay may be blocked by the browser.
-          });
+          startVideo();
         } else {
           introVideo.pause();
         }
       });
     },
     {
-      threshold: 0.6
+      threshold: 0.5
     }
   );
 
